@@ -9,6 +9,7 @@ import DashboardPage from './views/dashboard/DashboardPage';
 import UserListPage from './views/users/UserListPage';
 import UserDetailPage from './views/users/UserDetailPage';
 import ActivityPage from './views/activities/ActivityPage';
+import FoodPage from './views/foods/FoodPage';
 
 function AppRoutes() {
   const { user, isAdmin, loading } = useAuthViewModel();
@@ -52,6 +53,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <AdminLayout><UserDetailPage /></AdminLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/foods"
+        element={
+          <ProtectedRoute>
+            <AdminLayout><FoodPage /></AdminLayout>
           </ProtectedRoute>
         }
       />

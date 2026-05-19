@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthViewModel } from '../../viewmodels/AuthViewModel';
 import type { LucideIcon } from 'lucide-react';
 import {
-  LayoutDashboard, Users, Dumbbell, LogOut, Leaf, Menu, X,
+  LayoutDashboard, Users, Dumbbell, LogOut, Leaf, Menu, X, Utensils
 } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
@@ -15,6 +15,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/users', icon: Users, label: 'Người dùng' },
+  { to: '/foods', icon: Utensils, label: 'Đồ ăn' },
   { to: '/activities', icon: Dumbbell, label: 'Hoạt động' },
 ];
 

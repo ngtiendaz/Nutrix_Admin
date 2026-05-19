@@ -16,9 +16,19 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  query,
+  orderBy,
   type Firestore,
 } from 'firebase/firestore';
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  type FirebaseStorage,
+} from 'firebase/storage';
 import type { DocumentData } from 'firebase/firestore';
+import type { Food } from '../models/Food';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
@@ -36,11 +46,13 @@ export function isFirebaseConfigured(): boolean {
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
 let db: Firestore | undefined;
+let storage: FirebaseStorage | undefined;
 
 if (isFirebaseConfigured()) {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
+  storage = getStorage(app);
 }
 
 const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || '').split(',').map((e: string) => e.trim()).filter(Boolean);
@@ -71,6 +83,39 @@ export function onAuthChange(callback: (user: User | null) => void) {
 
 export function getCurrentUser() {
   return auth?.currentUser ?? null;
+}
+
+// ─── Storage ────────────────────────────────────────────────────────────────
+
+export async function uploadImage(file: File, path: string): Promise<string> {
+  if (!storage) throw new Error('Firebase Storage chưa được cấu hình.');
+  const storageRef = ref(storage, path);
+  await uploadBytes(storageRef, file);
+  return getDownloadURL(storageRef);
+}
+
+// ─── Firestore: Foods ───────────────────────────────────────────────────────
+
+export async function fetchFoods(): Promise<Food[]> {
+  if (!db) throw new Error('Firebase chưa được cấu hình.');
+  const foodsQuery = query(collection(db, 'foods'), orderBy('createdAt', 'desc'));
+  const snapshot = await getDocs(foodsQuery);
+  return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Food));
+}
+
+export async function addFood(data: Omit<Food, 'id'>) {
+  if (!db) throw new Error('Firebase chưa được cấu hình.');
+  return addDoc(collection(db, 'foods'), data);
+}
+
+export async function updateFood(foodId: string, data: Partial<Food>) {
+  if (!db) throw new Error('Firebase chưa được cấu hình.');
+  return updateDoc(doc(db, 'foods', foodId), data);
+}
+
+export async function deleteFood(foodId: string) {
+  if (!db) throw new Error('Firebase chưa được cấu hình.');
+  return deleteDoc(doc(db, 'foods', foodId));
 }
 
 // ─── Firestore: Users ────────────────────────────────────────────────────────
