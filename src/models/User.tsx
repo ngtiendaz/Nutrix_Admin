@@ -9,6 +9,7 @@ interface UserData {
   weight?: number | null;
   activityLevel?: string;
   goal?: string;
+  healthNote?: string;
   createdAt?: { toDate: () => Date } | Date | null;
 }
 
@@ -43,6 +44,7 @@ export class UserModel {
   weight: number | null;
   activityLevel: string;
   goal: string;
+  healthNote: string;
   createdAt: { toDate: () => Date } | Date | null;
 
   constructor(data: UserData = {}) {
@@ -56,6 +58,7 @@ export class UserModel {
     this.weight = data.weight ?? null;
     this.activityLevel = data.activityLevel || '';
     this.goal = data.goal || '';
+    this.healthNote = data.healthNote || '';
     this.createdAt = data.createdAt || null;
   }
 
@@ -73,7 +76,17 @@ export class UserModel {
 
   get displayCreatedAt(): string {
     if (!this.createdAt) return '—';
-    const date = 'toDate' in this.createdAt ? this.createdAt.toDate() : new Date(this.createdAt as Date);
-    return date.toLocaleDateString('vi-VN');
+    try {
+      if (typeof this.createdAt === 'object' && typeof (this.createdAt as any).toDate === 'function') {
+        return (this.createdAt as any).toDate().toLocaleDateString('vi-VN');
+      }
+      const date = new Date(this.createdAt as any);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString('vi-VN');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return '—';
   }
 }

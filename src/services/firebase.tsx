@@ -13,7 +13,7 @@ import {
   doc,
   getDoc,
   getDocs,
-  addDoc,
+  setDoc,
   updateDoc,
   deleteDoc,
   query,
@@ -105,7 +105,9 @@ export async function fetchFoods(): Promise<Food[]> {
 
 export async function addFood(data: Omit<Food, 'id'>) {
   if (!db) throw new Error('Firebase chưa được cấu hình.');
-  return addDoc(collection(db, 'foods'), data);
+  const docRef = doc(collection(db, 'foods'));
+  await setDoc(docRef, { ...data, id: docRef.id });
+  return docRef;
 }
 
 export async function updateFood(foodId: string, data: Partial<Food>) {
@@ -152,6 +154,19 @@ export async function fetchUserActivities(userId: string): Promise<DocumentData[
   return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
+export async function fetchUserDailySummaries(userId: string): Promise<DocumentData[]> {
+  if (!db) throw new Error('Firebase chưa được cấu hình.');
+  const snapshot = await getDocs(collection(db, 'users', userId, 'daily_summaries'));
+  return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export async function fetchUserHistoryPlans(userId: string): Promise<DocumentData[]> {
+  if (!db) throw new Error('Firebase chưa được cấu hình.');
+  const snapshot = await getDocs(collection(db, 'users', userId, 'history_plans'));
+  return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+
 // ─── Firestore: Global Activities ───────────────────────────────────────────
 
 export async function fetchActivities(): Promise<DocumentData[]> {
@@ -162,7 +177,9 @@ export async function fetchActivities(): Promise<DocumentData[]> {
 
 export async function addActivity(data: { name: string; metValue: number; icon: string }) {
   if (!db) throw new Error('Firebase chưa được cấu hình.');
-  return addDoc(collection(db, 'activities'), data);
+  const docRef = doc(collection(db, 'activities'));
+  await setDoc(docRef, { ...data, id: docRef.id });
+  return docRef;
 }
 
 export async function updateActivity(activityId: string, data: { name: string; metValue: number; icon: string }) {
