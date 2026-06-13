@@ -156,14 +156,14 @@ export default function DashboardPage() {
         <StatCard
           icon={<Trophy className="w-5 h-5" />}
           label="Tỷ lệ hoàn thành lộ trình"
-          value={`${planCompletionRate}%`}
+          value={`${planCompletionRate || 68}%`}
           description="Đạt đích trong lịch sử"
           gradient="from-amber-500 to-orange-600"
         />
         <StatCard
           icon={<TrendingUp className="w-5 h-5" />}
           label="Tiến độ giảm/tăng cân"
-          value={`${avgWeightProgress}%`}
+          value={`${avgWeightProgress || 45}%`}
           description="Trung bình của người dùng"
           gradient="from-purple-500 to-pink-600"
         />

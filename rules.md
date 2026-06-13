@@ -72,6 +72,10 @@ Tất cả các lệnh thực thi qua terminal cần tuân theo cơ chế của 
   - Luôn sử dụng TypeScript chặt chẽ, định nghĩa đầy đủ Type/Interface.
   - Giữ gìn các comment hiện tại và docstrings nếu không liên quan trực tiếp đến chỉnh sửa của mình.
   - Link đến các file hoặc code symbols bằng định dạng markdown của github: `[filename](file:///path/to/file)`.
+3. **Analyze Code (Kiểm tra lỗi biên dịch)**:
+  - BẮT BUỘC phải phân tích lại trình biên dịch sau mỗi lần sửa đổi code để đảm bảo không phát sinh lỗi (đặc biệt là lỗi type của TypeScript và ESLint).
+  - Sử dụng lệnh `npx tsc --noEmit` để kiểm tra lỗi kiểu dữ liệu.
+  - Sử dụng lệnh `npm run lint` để bắt các lỗi cú pháp và cảnh báo.
 
 ### 2.4. Ngôn ngữ (Language)
 - Giao diện người dùng và thông báo lỗi hiển thị cho user phải viết bằng **Tiếng Việt**.
